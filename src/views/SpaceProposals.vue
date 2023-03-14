@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, computed, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { PROPOSALS_QUERY } from '@/helpers/queries';
 import { ExtendedSpace } from '@/helpers/interfaces';
 import { clone } from '@snapshot-labs/snapshot.js/src/utils';
@@ -109,9 +109,13 @@ watch(spaceProposals, () => {
 
 watch(stateFilter, loadProposals);
 
-onMounted(() => {
-  if (spaceProposals.value.length === 0) loadProposals();
-});
+watch(
+  () => props.space.id,
+  () => {
+    loadProposals();
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
@@ -161,7 +165,7 @@ onMounted(() => {
             :hide-space-avatar="proposal.space.id === space.id"
             :to="{
               name: 'spaceProposal',
-              params: { id: proposal.id }
+              params: { id: proposal.id, key: proposal.space.id }
             }"
           />
         </BaseBlock>

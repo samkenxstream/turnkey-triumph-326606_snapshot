@@ -7,8 +7,8 @@ import { ExtendedSpace } from '@/helpers/interfaces';
 const { isSending } = useClient();
 const { isUploadingImage } = useImageUpload();
 
-const BASIC_VALIDATION = { name: 'basic', params: {} };
-const ANY_VOTE_VALIDATION = { name: 'any', params: {} };
+const DEFAULT_PROPOSAL_VALIDATION = { name: 'any', params: {} };
+const DEFAULT_VOTE_VALIDATION = { name: 'any', params: {} };
 const EMPTY_SPACE_FORM = {
   strategies: [],
   categories: [],
@@ -29,8 +29,8 @@ const EMPTY_SPACE_FORM = {
     type: '',
     privacy: ''
   },
-  validation: BASIC_VALIDATION,
-  voteValidation: ANY_VOTE_VALIDATION,
+  validation: clone(DEFAULT_PROPOSAL_VALIDATION),
+  voteValidation: clone(DEFAULT_VOTE_VALIDATION),
   name: '',
   about: '',
   avatar: '',
@@ -55,7 +55,7 @@ const formSettings = ref(clone(EMPTY_SPACE_FORM));
 const initialFormState = ref(clone(EMPTY_SPACE_FORM));
 const showAllValidationErrors = ref(false);
 
-export function useSpaceForm(context: 'setup' | 'settings') {
+export function useFormSpaceSettings(context: 'setup' | 'settings') {
   const form = computed({
     get: () => (context === 'setup' ? formSetup.value : formSettings.value),
     set: newVal =>
@@ -73,8 +73,10 @@ export function useSpaceForm(context: 'setup' | 'settings') {
 
     formData.strategies = formData.strategies || [];
     formData.plugins = formData.plugins || {};
-    formData.validation = formData.validation || BASIC_VALIDATION;
-    formData.voteValidation = formData.voteValidation || ANY_VOTE_VALIDATION;
+    formData.validation =
+      formData.validation || clone(DEFAULT_PROPOSAL_VALIDATION);
+    formData.voteValidation =
+      formData.voteValidation || clone(DEFAULT_VOTE_VALIDATION);
     formData.filters = formData.filters || {};
     formData.voting = formData.voting || {};
     formData.voting.delay = formData.voting?.delay || undefined;
